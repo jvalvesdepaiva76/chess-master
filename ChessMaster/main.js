@@ -1,6 +1,6 @@
-import './style.css'
-import { createChessboard, movePiece } from './components/Chessboard.js'
-import { loadPGN } from './components/PGNLoader.js'
+import './style.css';
+import { createChessboard, movePiece } from './components/Chessboard.js';
+import { loadPGN } from './components/PGNLoader.js';
 
 document.querySelector('#app').innerHTML = `
   <input type="file" id="pgnInput" accept=".pgn">
@@ -12,7 +12,7 @@ document.querySelector('#app').innerHTML = `
     </div>
     <div id="pgnDisplay" class="pgn-display"></div>
   </div>
-`
+`;
 
 let { board, pieces } = createChessboard(document.getElementById('chessboard'));
 let moves = [];
@@ -22,7 +22,7 @@ document.getElementById('pgnInput').addEventListener('change', async (event) => 
   const file = event.target.files[0];
   if (file) {
     const pgnText = await file.text();
-    moves = loadPGN(pgnText);
+    moves = loadPGN(pgnText, board, pieces);  // Passa board e pieces
     displayPGN(moves);
     currentMoveIndex = 0;
     resetBoard();  // Resetar o tabuleiro ao carregar um novo PGN
@@ -32,7 +32,9 @@ document.getElementById('pgnInput').addEventListener('change', async (event) => 
 document.getElementById('nextMove').addEventListener('click', () => {
   if (currentMoveIndex < moves.length) {
     const { from, to } = moves[currentMoveIndex];
-    movePiece(board, pieces, from, to);
+    if (from && to) {
+        movePiece(board, pieces, from, to);
+    }
     highlightMove(currentMoveIndex);
     currentMoveIndex++;
   }
